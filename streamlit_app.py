@@ -4,24 +4,26 @@ import google.generativeai as genai
 st.set_page_config(page_title="NEXUS MARTUCCI V6 PRO", page_icon="🛡️")
 st.title("🛡️ NEXUS MARTUCCI V6 PRO")
 
-# Inserimento chiave (assicurati che sia corretta)
+# Usiamo la tua chiave che abbiamo verificato
 api_key = "AIzaSyCMPB2xUonWMcTACxLjhCH3Ig2_3AY15W8"
 genai.configure(api_key=api_key)
 
-# Usiamo il percorso assoluto del modello
+# CAMBIAMO MODELLO: Usiamo gemini-pro per massima compatibilità
 try:
-    model = genai.GenerativeModel('models/gemini-1.5-flash')
+    model = genai.GenerativeModel('gemini-pro')
 except Exception as e:
-    st.error(f"Errore configurazione modello: {e}")
+    st.error(f"Errore configurazione: {e}")
 
 user_input = st.text_area("Cosa vuoi analizzare?")
 
 if st.button("ESEGUI ANALISI"):
     if user_input:
         try:
-            # Specifichiamo il metodo di generazione
-            response = model.generate_content(user_input)
-            st.markdown(response.text)
+            with st.spinner("Accesso ai database Pro..."):
+                response = model.generate_content(user_input)
+                st.markdown(response.text)
         except Exception as e:
             st.error(f"Dettaglio tecnico: {e}")
-            st.info("Se l'errore persiste, prova a usare: 'gemini-pro' invece di 'gemini-1.5-flash' nel codice.")
+            st.info("Se vedi ancora 404, Google sta impiegando più tempo del previsto ad attivare la tua chiave.")
+    else:
+        st.warning("Inserisci un testo.")
